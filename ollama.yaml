@@ -1,0 +1,67 @@
+kind: Deployment
+apiVersion: apps/v1
+metadata:
+  name: ollama
+  namespace: default
+  labels:
+    app: ollama
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: ollama
+  template:
+    metadata:
+      labels:
+        app: ollama
+    spec:
+      volumes:
+        - name: ollama-models
+          hostPath:
+            path: /root/.ollama
+            type: ''
+        - name: host-time
+          hostPath:
+            path: /etc/localtime
+            type: ''
+      containers:
+        - name: ollama
+          image: 'cmss.aiclouldsz.icu/ollama/ollama:latest'
+          command: ["/bin/bash", "-c"]
+          args:
+            - |
+              (ollama serve &)
+              sleep 10
+              echo "pull model"
+              ollama pull qwen2.5:1.5b
+              echo "pull model finished"
+              sleep infinity
+          ports:
+            - name: http-11434
+              containerPort: 11434
+              protocol: TCP
+          volumeMounts:
+            - name: ollama-models
+              mountPath: /root/.ollama
+            - name: host-time
+              readOnly: true
+              mountPath: /etc/localtime
+          imagePullPolicy: IfNotPresent
+      restartPolicy: Always
+---
+kind: Service
+apiVersion: v1
+metadata:
+  name: ollama
+  namespace: default
+  labels:
+    app: ollama
+spec:
+  ports:
+    - name: http-11434
+      protocol: TCP
+      port: 11434
+      targetPort: 11434
+  selector:
+    app: ollama
+  type: ClusterIP

@@ -1,0 +1,45 @@
+global:
+  host: "demo.dify"
+  enableTLS: false
+  imageRegistry: "cmss.aiclouldsz.icu"
+
+  image:
+    # Set to the latest version of dify
+    # Check the version here: https://github.com/langgenius/dify/releases
+    # If not set, Using the default value in Chart.yaml
+    tag: "0.11.0"
+  extraBackendEnvs:
+  - name: SECRET_KEY
+    value: "abcd1234"
+  - name: LOG_LEVEL
+    value: "DEBUG"
+  - name: VECTOR_STORE
+    value: "milvus"
+
+frontend:
+  image:
+    repository: cmss.aiclouldsz.icu/langgenius/dify-web
+
+worker:
+  image:
+    repository: cmss.aiclouldsz.icu/langgenius/dify-api
+
+sandbox:
+  image:
+    repository: cmss.aiclouldsz.icu/langgenius/dify-sandbox
+
+api:
+  image:
+    repository: cmss.aiclouldsz.icu/langgenius/dify-api
+
+ingress:
+  enabled: true
+  className: "nginx"
+
+minio:
+  embedded: true
+
+# 如果访问的地址不是 80 端口，此处一定要配置，一般来说，需要配置成 kind.yaml 中的第一个 port 映射的本机 port,
+# 如果是 80 端口，则删掉下面两行。
+cmss:
+  servicePort: "3389"

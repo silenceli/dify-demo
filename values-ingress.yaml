@@ -1,0 +1,19 @@
+defaultBackend:
+  image:
+    registry: cmss.aiclouldsz.icu/registry.k8s.io
+controller:
+  service:
+    type: NodePort
+    nodePorts:
+      http: "32101"
+      https: "32102"
+  image:
+    ## Keep false as default for now!
+    registry: cmss.aiclouldsz.icu/registry.k8s.io
+  opentelemetry:
+    image:
+      registry: cmss.aiclouldsz.icu/registry.k8s.io
+  admissionWebhooks:
+    patch:
+      image:
+        registry: cmss.aiclouldsz.icu/registry.k8s.io

@@ -1,0 +1,70 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: nginx-html
+data:
+  index.html: |
+    <!DOCTYPE html>
+    <html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Welcome to My Custom Nginx</title>
+    </head>
+    <body>
+        <h1>Hello, Nginx!</h1>
+        <p>This is a custom homepage served by Nginx.</p>
+        <iframe
+          src="http://demo.dify/chatbot/P85NJZTx9Cr3X4F4"
+          style="width: 100%; height: 100%; min-height: 700px"
+          frameborder="0"
+          allow="microphone">
+        </iframe>
+    </body>
+    </html>
+
+---
+
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: nginx-deployment
+  labels:
+    app: nginx
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: nginx
+  template:
+    metadata:
+      labels:
+        app: nginx
+    spec:
+      containers:
+      - name: nginx
+        image: cmss.aiclouldsz.icu/nginx:latest  # 使用自定义镜像
+        ports:
+        - containerPort: 80
+        volumeMounts:
+        - name: html-volume
+          mountPath: /usr/share/nginx/html  # Nginx 默认的 HTML 目录
+      volumes:
+      - name: html-volume
+        configMap:
+          name: nginx-html  # ConfigMap 的名字
+
+---
+
+apiVersion: v1
+kind: Service
+metadata:
+  name: nginx-service
+spec:
+  type: NodePort
+  selector:
+    app: nginx
+  ports:
+    - port: 80
+      targetPort: 80
+      nodePort: 32103  # 指定 NodePort 为 32103

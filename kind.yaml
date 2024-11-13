@@ -1,0 +1,34 @@
+kind: Cluster
+apiVersion: kind.x-k8s.io/v1alpha4
+containerdConfigPatches:
+- |-
+  [plugins."io.containerd.grpc.v1.cri".registry.mirrors."gcr.io"]
+    endpoint = ["https://gcr.lank8s.cn"]
+  [plugins."io.containerd.grpc.v1.cri".registry.mirrors."k8s.gcr.io"]
+    endpoint = ["https://k8s.lank8s.cn"]
+  [plugins."io.containerd.grpc.v1.cri".registry.mirrors."registry.k8s.io"]
+    endpoint = ["https://registry.lank8s.cn"]
+nodes:
+- role: control-plane
+  extraPortMappings:
+  - containerPort: 32101
+    hostPort: 8080           ## 注意，如果是自己的笔记本，修改为 80，否则修改为云服务的 8080 端口（因为通常云服务器不允许开 80 端口）
+    listenAddress: "0.0.0.0"
+  - containerPort: 32102
+    hostPort: 32102
+    listenAddress: "0.0.0.0"
+  - containerPort: 32103
+    hostPort: 32103
+    listenAddress: "0.0.0.0"
+  - containerPort: 32104
+    hostPort: 32104
+    listenAddress: "0.0.0.0"
+  - containerPort: 32105
+    hostPort: 32105
+    listenAddress: "0.0.0.0"
+  - containerPort: 32106
+    hostPort: 32106
+    listenAddress: "0.0.0.0"
+  - containerPort: 32107
+    hostPort: 32107
+    listenAddress: "0.0.0.0"
